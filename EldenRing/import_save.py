@@ -47,7 +47,7 @@ class Save:
         for i in range(count):
             h = 0x40 + i * entry_size
             size = struct.unpack_from("<q", data, h + 0x08)[0]
-            offset = struct.unpack_from("<I", data, h + 0x18)[0]
+            offset = struct.unpack_from("<I", data, h + 0x10)[0]
             if size < CHECKSUM or offset + size > len(data):
                 raise SaveError(f"entry {i} is out of bounds: the file is damaged or not an Elden Ring save.")
             self.entries.append((offset, size))
@@ -135,7 +135,7 @@ def debug(path: Path) -> int:
     starts = {}
     for i in range(min(max(count, 0), 12)):
         h = 0x40 + i * max(entry_size, 0x18)
-        starts[f"parsed[{i}]"] = (struct.unpack_from("<I", data, h + 0x18)[0], struct.unpack_from("<q", data, h + 0x08)[0])
+        starts[f"parsed[{i}]"] = (struct.unpack_from("<I", data, h + 0x10)[0], struct.unpack_from("<q", data, h + 0x08)[0])
     starts["fixed[0]"] = (0x300, 0x280010)
     starts["fixed[10]"] = (0x300 + 10 * 0x280010, 0x60010)
     for name, (off, size) in starts.items():
