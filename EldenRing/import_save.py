@@ -119,14 +119,46 @@ def info(path: Path) -> int:
     return 0
 
 
+def debug(path: Path) -> int:
+    """Prints the container header and tests where the checksums sit, to fix the layout from a real save."""
+    data = path.read_bytes()
+    print(f"{path}: {len(data)} bytes")
+    for row in range(0, 0x80, 0x10):
+        print(f"  {row:04X}: {data[row:row + 16].hex(' ')}")
+    count = struct.unpack_from("<i", data, 0x0C)[0]
+    entry_size = struct.unpack_from("<q", data, 0x20)[0]
+    print(f"  count={count} entryHeaderSize={entry_size:#x}")
+    for i in range(min(max(count, 0), 13)):
+        h = 0x40 + i * max(entry_size, 0x18)
+        print(f"  entry {i:2} @ {h:#06x}: {data[h:h + max(entry_size, 0x18)].hex(' ')}")
+    # Where are the checksums? Try the parsed offsets and the usual fixed layout, checksum first or last.
+    starts = {}
+    for i in range(min(max(count, 0), 12)):
+        h = 0x40 + i * max(entry_size, 0x18)
+        starts[f"parsed[{i}]"] = (struct.unpack_from("<I", data, h + 0x18)[0], struct.unpack_from("<q", data, h + 0x08)[0])
+    starts["fixed[0]"] = (0x300, 0x280010)
+    starts["fixed[10]"] = (0x300 + 10 * 0x280010, 0x60010)
+    for name, (off, size) in starts.items():
+        if off <= 0 or size <= CHECKSUM or off + size > len(data):
+            print(f"  {name}: off={off:#x} size={size:#x} out of range")
+            continue
+        first = hashlib.md5(data[off + CHECKSUM:off + size]).digest() == data[off:off + CHECKSUM]
+        last = hashlib.md5(data[off:off + size - CHECKSUM]).digest() == data[off + size - CHECKSUM:off + size]
+        print(f"  {name}: off={off:#x} size={size:#x} md5-first={first} md5-last={last} head={data[off:off + 24].hex(' ')}")
+    return 0
+
+
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description="Load a downloaded Elden Ring save as your own.")
     ap.add_argument("save", type=Path, nargs="?", help="the downloaded ER0000.sl2")
     ap.add_argument("--steam-id", type=int, help="your SteamID64 (only needed with several Steam accounts)")
     ap.add_argument("--out", type=Path, help="write the converted save here instead of installing it")
     ap.add_argument("--info", type=Path, metavar="SL2", help="show what's in a save and exit")
+    ap.add_argument("--debug", type=Path, metavar="SL2", help="print the file's layout (to fix the script for it)")
     a = ap.parse_args(argv)
     try:
+        if a.debug:
+            return debug(a.debug)
         if a.info:
             return info(a.info)
         if not a.save:
