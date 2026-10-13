@@ -1,0 +1,15 @@
+{
+	// Copy to <boss>.json (files starting with "_" aren't loaded). Fill from a recording:
+	//   python shotcaller.py replay recordings/rec-....log --anims
+	// lists each boss animation per pull, with how often and when it first came up; wire the ones worth a call.
+	"name": "Boss name",
+	"npcParamIds": [],
+	"phases": [
+		// { "phase": 2, "hpBelow": 0.5, "say": "Phase two" },
+		// { "phase": 2, "anim": 12345 }
+	],
+	"calls": [
+		// { "anim": 12345, "text": "Dodge late", "say": "late", "delay": 0.3, "hold": 2 },
+		// "phase": 0 = any phase; "say": "" = the text, "-" = silent; "cooldown": seconds before it can fire again (1.5)
+	]
+}

@@ -154,3 +154,8 @@ vite.config.ts.timestamp-*
 .idea/
 bin/
 obj/
+
+# Python / EldenRing recordings
+__pycache__/
+*.pyc
+EldenRing/recordings/

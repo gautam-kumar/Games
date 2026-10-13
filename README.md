@@ -2,8 +2,8 @@
 
 A repo for games projects. Personal use.
 
-| Folder | What | Build |
+| Folder | What | Run |
 |---|---|---|
-| `EldenRing/` | Elden Ring: boss callouts, modelled on FFXIV's Shotcaller | (nothing built yet) |
+| `EldenRing/` | Elden Ring: spoken boss callouts, modelled on FFXIV's Shotcaller | `python EldenRing/shotcaller.py` |
 
 Session notes live in `handoff/`.

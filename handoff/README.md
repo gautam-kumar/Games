@@ -4,5 +4,6 @@ One file per Claude Code session that works on this repo. Each lists purpose, cu
 
 | File | Area |
 |---|---|
+| [EldenRing.md](EldenRing.md) | EldenRing: boss callouts script (`EldenRing/`) |
 
 Repo-wide rules: build nothing until the user says "Go"; never enter credentials or print keys; one session owns each area's code.
