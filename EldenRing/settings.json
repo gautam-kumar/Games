@@ -1,8 +1,0 @@
-{
-	"voice": true,
-	"voiceRate": 2,        // -10 (slow) .. 10 (fast)
-	"record": true,        // every pull to recordings/ (how new calls get wired up)
-	"trackRadius": 40,     // metres: characters this close to you are watched
-	"bossMinHp": 5000,     // a watched character with this much max HP counts as a boss even without a boss file
-	"pollRate": 30         // game reads per second
-}
